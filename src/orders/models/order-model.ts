@@ -1,18 +1,18 @@
-import * as mongoose from "mongoose";
 import {City} from "../../common/models/city-enum";
+import {mongo} from "../../db";
 
-let orderSchema = new mongoose.Schema({
+let orderSchema = new mongo.Schema({
         note: String,
         user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Users",
+            type: mongo.Schema.Types.ObjectId,
+            ref: "users",
             required: [true, "User is required"],
         },
         products: [
             {
                 product: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "Product"
+                    type: mongo.Schema.Types.ObjectId,
+                    ref: "products"
                 },
                 quantity: Number,
             }
@@ -28,4 +28,4 @@ let orderSchema = new mongoose.Schema({
     })
 
 
-export const OrderModel = mongoose.model("Order", orderSchema,)
+export const OrderModel = mongo.model("Order", orderSchema,)

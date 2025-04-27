@@ -1,0 +1,35 @@
+import {handler} from "../../common/utils/utils/handler";
+import {UserModel} from "../../user/models/user-model";
+import {extractPhone} from "../../common/utils/utils/string/string-utils";
+import {compare, hash} from "bcrypt";
+import {sendSuccess} from "../../common/utils/utils/sendResponse";
+import {ErrorInput} from "../../common/models/app-error";
+import jwt from "jsonwebtoken";
+
+async function tokenSign(id: string, role: string) {
+    return jwt.sign({id: id, role: role,}, process.env.JWT_SECRET!, {expiresIn: "90d"});
+}
+
+export const authSignUp = handler(async (req, res, next) => {
+    if (req.body.password != req.body.confirmPassword) {
+        throw new ErrorInput("Passwords doesn't match")
+    }
+    req.body.password = await hash(req.body.password, 10);
+    delete req.body.confirmPassword;
+    let model = new UserModel(req.body)
+    let result = await model.save()
+    let token = await tokenSign(result.id, result.role);
+    sendSuccess(res, {data: result, token: token})
+})
+
+export const authSignIn = handler(async (req, res, next) => {
+    let model = await UserModel.findOne({email: req.body.email,})
+    if (!model) {
+        throw new ErrorInput("Email or password is invalid")
+    }
+    if (!(await compare(req.body.password, model.password))) {
+        throw new ErrorInput("Email or password is invalid")
+    }
+    let token = await tokenSign(model.id, model.role);
+    sendSuccess(res, {data: model, token: token})
+})

@@ -1,8 +1,10 @@
-import * as mongoose from "mongoose";
 import {City} from "../../common/models/city-enum";
 import {Role} from "../../common/models/role-enum";
+import {mongo} from "../../db";
+import {extractPhone} from "../../common/utils/utils/string/string-utils";
+import validator from "validator";
 
-let userSchema = new mongoose.Schema({
+let userSchema = new mongo.Schema({
     name: {
         type: String,
         required: true
@@ -10,11 +12,18 @@ let userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
     },
     phone: {
-        code: { type: String },
-        phone: { type: String },
-        _id: false,
+        type: String,
+        unique: true,
+        sparse: true,
+        validate: [
+            function (value: any) {
+                return validator.isMobilePhone(value , 'any' , {strictMode: true})
+            },
+            "Please Enter a valid phone",
+        ]
     },
     password: {
         type: String,
@@ -35,9 +44,9 @@ let userSchema = new mongoose.Schema({
         virtuals: true,
         transform: (doc, ret) => {
             delete ret.password;
+            ret.phone = extractPhone(ret.phone)
         }
     }
 })
 
-
-export const UserModel = mongoose.model("User", userSchema,)
+export const UserModel = mongo.model("User", userSchema,)

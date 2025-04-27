@@ -6,7 +6,7 @@ export const extractPhone = (phone: string | undefined): { code: string, phone: 
         return undefined;
 
     }
-    if (!validator.isMobilePhone(phone)) {
+    if (!validator.isMobilePhone(phone ,"any" , {strictMode: true})) {
         return undefined;
     }
     let k = parsePhoneNumberWithError(phone)!

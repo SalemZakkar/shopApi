@@ -1,6 +1,6 @@
-import * as mongoose from "mongoose";
+import {mongo} from "../../db";
 
-let productSchema = new mongoose.Schema({
+let productSchema = new mongo.Schema({
     name: {
         type: String,
         required: true
@@ -11,12 +11,12 @@ let productSchema = new mongoose.Schema({
         required: true,
     },
     category: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Category",
+        type: mongo.Schema.Types.ObjectId,
+        ref: "categories",
         required: [true, "Category is required"],
     },
 
 })
 
 
-export const ProductModel = mongoose.model("Product", productSchema,)
+export const ProductModel = mongo.model("Product", productSchema,)

@@ -15,6 +15,16 @@ export class AppError extends Error {
     }
 }
 
+export class NoPermissionsError extends AppError {
+    message: string;
+
+    constructor(message: string = "You Don't have permissions to do this request") {
+        super(message, 403);
+        this.message = message;
+    }
+}
+
+
 export class NotFoundError extends AppError {
     message: string;
 
