@@ -11,8 +11,6 @@ export class BaseApiGet {
     }
 
     paginate() {
-        this.request.query.skip ||= '0';
-        this.request.query.limit ||= '10';
         this.query = this.query.skip(parseInt(this.request.query.skip?.toString() || '0'),)
             .limit(parseInt(this.request.query.limit?.toString() || '10'));
         return this;
@@ -24,11 +22,20 @@ export class BaseApiGet {
         pop.forEach((item) => {
             delete q[item];
         })
+        let k = {}
+        Object.keys(this.request.query).forEach((item) => {
+            if (typeof q[item] === 'string') {
+                (k as any)[item] = q[item];
+                delete q[item];
+            }
+        })
         let temp = JSON.stringify(q)
         temp = temp.replace(/\b(gte|gt|lte|lt)\b/g, (match) => {
             return '$' + match
         })
-        this.query = this.query.find(JSON.parse(temp))
+        let objects = JSON.parse(temp)
+        Object.assign(k, objects)
+        this.query = this.query.find(k)
         return this;
     }
 

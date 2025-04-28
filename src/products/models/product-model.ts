@@ -10,12 +10,18 @@ let productSchema = new mongo.Schema({
         type: Number,
         required: true,
     },
+    images: {
+        type: [String],
+    },
     category: {
         type: mongo.Schema.Types.ObjectId,
-        ref: "categories",
+        ref: "Category",
         required: [true, "Category is required"],
     },
-
+    qty: {
+        type: Number,
+        required: true,
+    }
 })
 
 

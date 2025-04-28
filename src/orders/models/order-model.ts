@@ -5,14 +5,14 @@ let orderSchema = new mongo.Schema({
         note: String,
         user: {
             type: mongo.Schema.Types.ObjectId,
-            ref: "users",
+            ref: "User",
             required: [true, "User is required"],
         },
         products: [
             {
                 product: {
                     type: mongo.Schema.Types.ObjectId,
-                    ref: "products"
+                    ref: "Product"
                 },
                 quantity: Number,
             }

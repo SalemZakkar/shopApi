@@ -9,6 +9,7 @@ import authRoutes from "./auth/routes/auth-routes";
 import {authMiddleware} from "./auth/middleware/auth-middleware";
 import categoriesRoutes from "./categories/routes/categories-routes";
 import userRoutes from "./user/routes/user-routes";
+import productsRoutes from "./products/routes/products-routes";
 
 config()
 
@@ -25,6 +26,8 @@ app.use("/api/auth", authRoutes)
 app.use("/api/categories", categoriesRoutes)
 
 app.use("/api/users", userRoutes)
+
+app.use("/api/product", productsRoutes)
 
 app.use(errorHandlerMiddleWare)
 
