@@ -1,9 +1,11 @@
 import {handler} from "../../common/utils/utils/handler";
 import {UserModel} from "../models/user-model";
-import {ErrorInput} from "../../common/models/app-error";
+import {ErrorInput, NoPermissionsError} from "../../common/models/app-error";
 import {OtpModel} from "../models/otp-model";
 import {sendSuccess} from "../../common/utils/utils/sendResponse";
 import {hash} from "bcrypt";
+import {BaseApiGet} from "../../common/models/base-api-get";
+import {Role} from "../../common/models/role-enum";
 
 
 export const sendOtp = handler(async (req, res, next) => {
@@ -13,6 +15,16 @@ export const sendOtp = handler(async (req, res, next) => {
     }
     let result = await (new OtpModel({user: model.id}).save())
     sendSuccess(res, {verificationId: result.id,})
+})
+
+export const getUsersByCriteria = handler(async (req , res , next) => {
+    if((req as any).user.role == Role.User){
+        throw new NoPermissionsError()
+    }
+    let model = new BaseApiGet(UserModel.find(), req).paginate().filter();
+    let data = await model.query.find();
+    let count = await model.query.clone().countDocuments();
+    sendSuccess(res, {data: data, total: count,})
 })
 
 export const changePasswordOtp = handler(async (req, res, next) => {

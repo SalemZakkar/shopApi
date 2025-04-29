@@ -35,7 +35,7 @@ export const getProductById = handler(async (req, res, next) => {
 
 export const getProducts = handler(async (req, res, next) => {
     let model = new BaseApiGet(ProductModel.find(), req).paginate().filter()
-    let count = await model.query.countDocuments()
+    let count = await (new BaseApiGet(ProductModel.find(), req).filter()).query.countDocuments()
     let data = await model.query.clone().find()
     sendSuccess(res, {
         data: data,

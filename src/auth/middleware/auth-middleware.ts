@@ -6,6 +6,7 @@ export const authMiddleware = () => {
         secret: process.env.JWT_SECRET!,
         algorithms: ["HS256"],
         isRevoked: async (request , payload) => {
+
             (request as any).user = await UserModel.findById((payload!.payload as any).id);
             return payload == null;
         },

@@ -34,5 +34,5 @@ export const errorHandlerMiddleWare: ErrorRequestHandler = (err, req, res, next)
         statusCode = err.code;
     }
 
-    sendError(res, {code: statusCode, errors: err.errors, message: err.message,})
+    sendError(res, {code: statusCode, errors: err.errors, message: err.message,stack: err.stack})
 };
